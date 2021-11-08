@@ -102,16 +102,17 @@ func main() {
 		level.Debug(logger).Log("msg", "  matched receiver", "receiver", conf.Name)
 
 		// TODO: Consider reusing notifiers or just jira clients to reuse connections.
-		tp := jira.BasicAuthTransport{
+		tp := jira.CookieAuthTransport{
 			Username: conf.User,
 			Password: string(conf.Password),
+			AuthURL:  conf.APIURL + "/rest/auth/1/session",
 		}
+
 		client, err := jira.NewClient(tp.Client(), conf.APIURL)
 		if err != nil {
 			errorHandler(w, http.StatusInternalServerError, err, conf.Name, &data, logger)
 			return
 		}
-
 		if retry, err := notify.NewReceiver(logger, conf, tmpl, client.Issue).Notify(&data, *hashJiraLabel); err != nil {
 			var status int
 			if retry {
