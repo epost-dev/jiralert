@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: jiralertconfig
+data:
+  jiralert.yml: |
+{{ .Values.configs.jiralertyaml | indent 4 }}
+  jiralert.tmpl: |
+{{ .Values.configs.jiralerttmpl | indent 4 }}
